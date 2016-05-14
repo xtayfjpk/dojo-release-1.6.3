@@ -1,0 +1,5 @@
+<div style="display: inline;">
+	{{#each radioObjects}}
+		<input type="radio" dojoType="my.widget.RadioButton" name="{{name}}" value="{{value}}" {{#if checked}}checked="checked"{{/if}} labelText="{{labelText}}"/>
+	{{/each}}
+</div>
