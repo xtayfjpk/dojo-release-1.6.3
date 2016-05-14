@@ -1,7 +1,7 @@
-dojo.provide("my.widget.CheckBox");
+dojo.provide("my.widget.RadioButton");
 
-dojo.require("dijit.form.CheckBox");
-dojo.declare("my.widget.CheckBox",dijit.form.CheckBox, {
+dojo.require("dijit.form.RadioButton");
+dojo.declare("my.widget.RadioButton",dijit.form.RadioButton, {
 	
 	startup : function() {
 		this.inherited(arguments);
