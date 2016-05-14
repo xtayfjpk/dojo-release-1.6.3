@@ -12,24 +12,39 @@ dojo.require("dijit._Widget");
 dojo.require("dojo.string");
 dojo.require("dojo.parser");
 dojo.require("dojo.cache");
-dojo.declare("dijit._Templated",null,{templateString:null,templatePath:null,widgetsInTemplate:false,_skipNodeCache:false,_earlyTemplatedStartup:false,constructor:function(){
-this._attachPoints=[];
-this._attachEvents=[];
-},_stringRepl:function(_1){
-var _2=this.declaredClass,_3=this;
-return dojo.string.substitute(_1,this,function(_4,_5){
-if(_5.charAt(0)=="!"){
-_4=dojo.getObject(_5.substr(1),false,_3);
-}
-if(typeof _4=="undefined"){
-throw new Error(_2+" template:"+_5);
-}
-if(_4==null){
-return "";
-}
-return _5.charAt(0)=="!"?_4:_4.toString().replace(/"/g,"&quot;");
-},this);
-},buildRendering:function(){
+dojo.declare("dijit._Templated",null,{
+	templateString:null,
+	templatePath:null,
+	widgetsInTemplate:false,
+	useHandlebars : false,
+	_skipNodeCache:false,
+	_earlyTemplatedStartup:false,
+	
+	constructor:function(){
+	this._attachPoints=[];
+	this._attachEvents=[];
+	},
+	_stringRepl:function(_1){
+		var _2=this.declaredClass,_3=this;
+		var parsedTemlate = dojo.string.substitute(_1,this,function(_4,_5){
+			if(_5.charAt(0)=="!"){
+				_4=dojo.getObject(_5.substr(1),false,_3);
+			}
+			if(typeof _4=="undefined"){
+				throw new Error(_2+" template:"+_5);
+			}
+			if(_4==null){
+				return "";
+			}
+			return _5.charAt(0)=="!"?_4:_4.toString().replace(/"/g,"&quot;");
+		},this);
+		if(this.useHandlebars) {
+			var templateFun = Handlebars.compile(parsedTemlate);
+			parsedTemlate = templateFun(this);
+		}
+		return parsedTemlate;
+	},
+buildRendering:function(){
 var _6=dijit._Templated.getCachedTemplate(this.templatePath,this.templateString,this._skipNodeCache);
 var _7;
 if(dojo.isString(_6)){
@@ -151,7 +166,7 @@ if(!_1d){
 _1d=dojo.cache(_1c,{sanitize:true});
 }
 _1d=dojo.string.trim(_1d);
-if(_1e||_1d.match(/\$\{([^\}]+)\}/g)){
+if(_1e||_1d.match(/\$\{([^\}]+)\}/g)||_1d.match(/\{\{([^\}\}]+)\}\}/g)){
 return (_1f[key]=_1d);
 }else{
 var _21=dojo._toDom(_1d);
