@@ -108,6 +108,13 @@ this.onShow();
 },onHide:function(){
 },onClose:function(){
 return true;
-}});
+},
+	show : function() {
+		$(this.domNode).show();
+	},
+	hide : function() {
+		$(this.domNode).hide();
+	}
+});
 })();
 }
